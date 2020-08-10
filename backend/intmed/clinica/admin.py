@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Especialidade,Medico,Agenda,HorarioAgenda
+from .models import Especialidade,Medico,Agenda,HorarioAgenda,Consulta
 
 class MedicoAdmin(admin.ModelAdmin):
     list_display = ('nome','especialidade','crm')
@@ -17,4 +17,5 @@ class AgendaAdmin(admin.ModelAdmin):
 
 admin.site.register(Agenda, AgendaAdmin)
 admin.site.register(Especialidade)
+admin.site.register(Consulta)
 admin.site.register(Medico,MedicoAdmin)
