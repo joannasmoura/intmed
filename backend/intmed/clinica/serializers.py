@@ -7,7 +7,7 @@ class EspecialidadeSerializer(serializers.ModelSerializer):
     nome = serializers.CharField(required=True, max_length=100)  
     class Meta:
         model = Especialidade
-        fields = '__all__'
+        fields = '__all__'    
     
 class MedicoSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
