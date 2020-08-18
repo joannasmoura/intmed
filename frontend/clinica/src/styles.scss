@@ -1,0 +1,98 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$intmed-palette: (
+    50 : #e9f6f7,
+    100 : #c8e9eb,
+    200 : #a4dadd,
+    300 : #80cbcf,
+    400 : #64bfc5,
+    500 : #49b4bb,
+    600 : #42adb5,
+    700 : #39a4ac,
+    800 : #319ca4,
+    900 : #218c96,
+    A100 : #d2fbff,
+    A200 : #49b4bb,
+    A400 : #6cf2ff,
+    A700 : #52f0ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$clinica-primary: mat-palette($intmed-palette);
+$clinica-accent: mat-palette($intmed-palette, A200, A100, A400);
+
+$clinica-warn: mat-palette($mat-red);
+
+$clinica-theme: mat-light-theme((
+  color: (
+    primary: $clinica-primary,
+    accent: $clinica-accent,
+    warn: $clinica-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($clinica-theme);
+
+/* You can add global styles to this file, and also import other style files */
+@import '~roboto-fontface/css/roboto/roboto-fontface.css';
+@import './variables.scss';
+body{
+    font-family: Roboto;
+    font-style: normal;
+}
+
+// .input-text{
+//     width: 400px;
+//     height: 40px;
+//     border: 1px solid #A8A8A8;
+//     box-sizing: border-box;
+//     border-radius: 4px;
+//     margin: 10px;
+
+//     &:focus{
+//         border: 1px solid $primary-color ;
+//         outline: none;
+//     }
+// }
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+mat-form-field{
+  width: 400px;
+}
+
+input{
+  &:focus{
+    outline: none;
+  }
+}
+
+
+::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.4em 0px !important;}
+::ng-deep .mat-form-field-label-wrapper { top: -1.5em; }
+
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: translateY(-1.1em) scale(.75);
+    width: 133.33333%;
+}

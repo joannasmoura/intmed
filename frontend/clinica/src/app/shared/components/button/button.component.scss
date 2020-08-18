@@ -1,0 +1,39 @@
+@import "../../../../variables.scss";
+@import "../../../../styles.scss";
+
+.btn{
+    
+    width:180px;
+    height: 40px;
+    border-radius: 8px;
+    border:none;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    cursor:pointer;
+    
+    &.primary{
+        background:$primary-color;
+        color:$secondary-color;
+        &:hover{
+            background:$hover-primary;
+        }
+    }
+
+    &.secondary{
+        background:$secondary-color;
+        color:$primary-color;
+        &:hover{
+            background:$hover-secondary;
+        }
+    }
+
+    &.link{
+        
+    }
+
+    &:focus{
+        outline: none;
+    }
+}

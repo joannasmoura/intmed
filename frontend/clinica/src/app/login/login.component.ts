@@ -6,13 +6,21 @@ import { AuthenticationService } from '../core/services/auth.service';
 import { User } from '../core/models/user';
 
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ 
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'] 
+})
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
     returnUrl: string;
     error = '';
+    labelAcessar = "Acessar";
+    labelCriar = "Criar Conta";
+    primary = "primary";
+    secondary = "secondary";
 
     constructor(
         private formBuilder: FormBuilder,
@@ -29,11 +37,16 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
-            password: ['', Validators.required]
+            password: ['', Validators.required],
+            lembrarSenha: [false, Validators.required]
         });
 
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    }
+
+    teste(event){
+        console.log('clicou',event)
     }
 
     // convenience getter for easy access to form fields
@@ -57,6 +70,7 @@ export class LoginComponent implements OnInit {
                 error => {
                     this.error = error;
                     this.loading = false;
-                });
+                }
+            );
     }
 }

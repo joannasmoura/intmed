@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,IAAI,CAAA;EACA,UAAU,ECHE,OAAO;EDInB,KAAK,EAAC,KAAK;EACX,MAAM,EAAE,IAAI;EACZ,aAAa,EAAE,GAAG;EAClB,KAAK,EAAC,KAAK;EACX,WAAW,EAAE,MAAM;CACtB",
+    "sources": [
+        "button.component.scss",
+        "../../../../variables.scss"
+    ],
+    "names": [],
+    "file": "button.component.css"
+}

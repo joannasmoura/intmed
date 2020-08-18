@@ -1,9 +1,16 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+<!-- <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
   <div class="navbar-nav">
       <a class="nav-item nav-link" routerLink="/">Home</a>
       <a class="nav-item nav-link" (click)="logout()">Logout</a>
   </div>
-</nav>
+</nav> -->
+
+<mat-toolbar  *ngIf="currentUser">
+  <img src='../../assets/logo.svg'/>
+  <span class="example-spacer"></span>
+  <span>Joanna Moura</span>
+  <a class="nav-item nav-link" (click)="logout()">Desconectar</a>
+</mat-toolbar>
 
 <!-- main app container -->
 <div class="container">
