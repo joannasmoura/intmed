@@ -18,14 +18,17 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatCardModule} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
-
+import {MatDialogModule} from '@angular/material/dialog';
+import { ModalConsultaComponent } from './modal-consulta/modal-consulta.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ButtonComponent
+    ButtonComponent,
+    ModalConsultaComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,9 @@ import {MatButtonModule} from '@angular/material/button';
     MatToolbarModule,
     MatCardModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    MatSelectModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

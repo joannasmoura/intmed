@@ -4,13 +4,14 @@
       <a class="nav-item nav-link" (click)="logout()">Logout</a>
   </div>
 </nav> -->
-
-<mat-toolbar  *ngIf="currentUser">
-  <img src='../../assets/logo.svg'/>
-  <span class="example-spacer"></span>
-  <span>Joanna Moura</span>
-  <a class="nav-item nav-link" (click)="logout()">Desconectar</a>
-</mat-toolbar>
+<nav class="navbar" *ngIf="currentUser">
+  <mat-toolbar >
+    <img class="logo-dimension" src='../../assets/logo.svg'/>
+    <span class="example-spacer"></span>
+    <span>Joanna Moura</span>
+    <a class="nav-item nav-link" (click)="logout()">Desconectar</a>
+  </mat-toolbar>
+</nav>
 
 <!-- main app container -->
 <div class="container">

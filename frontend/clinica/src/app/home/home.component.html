@@ -1,38 +1,40 @@
-<mat-card *ngIf="consultas">
-  <mat-card-title style="display: flex;">
-    <span>Consulta Clínica</span>
-    <span class="example-spacer"></span>
-    <span>
-      <button mat-raised-button color="primary">
-        Nova Consulta
-      </button>
-    </span>
-  </mat-card-title>
-  <mat-card-content>
-    <table mat-table [dataSource]="consultas">
-      <ng-container matColumnDef="especialidade">
-        <th mat-header-cell *matHeaderCellDef> ESPECIALIDADE </th>
-        <td mat-cell *matCellDef="let consulta"> {{consulta.medico.especialidade.nome}} </td>
-      </ng-container>
-      <ng-container matColumnDef="profissional">
-        <th mat-header-cell *matHeaderCellDef> PROFISSIONAL</th>
-        <td mat-cell *matCellDef="let consulta"> Dr. {{consulta.medico.nome}} </td>
-      </ng-container>
-      <ng-container matColumnDef="data">
-        <th mat-header-cell *matHeaderCellDef> DATA</th>
-        <td mat-cell *matCellDef="let consulta"> {{consulta.dia}} </td>
-      </ng-container>
-      <ng-container matColumnDef="hora">
-        <th mat-header-cell *matHeaderCellDef> HORA</th>
-        <td mat-cell *matCellDef="let consulta"> {{consulta.horario}} </td>
-      </ng-container>
-      <ng-container matColumnDef="acao">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let consulta"> Desmarcar</td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-card-content>
-  
-</mat-card>
+<div class="main-div">
+  <mat-card *ngIf="consultas">
+    <mat-card-title style="display: flex;">
+      <span>Consulta Clínica</span>
+      <span class="example-spacer"></span>
+      <span>
+        <button mat-raised-button color="primary" (click)="openDialog()">
+          Nova Consulta
+        </button>
+      </span>
+    </mat-card-title>
+    <mat-card-content>
+      <table mat-table [dataSource]="consultas">
+        <ng-container matColumnDef="especialidade">
+          <th mat-header-cell *matHeaderCellDef> ESPECIALIDADE </th>
+          <td mat-cell *matCellDef="let consulta"> {{consulta.medico.especialidade.nome}} </td>
+        </ng-container>
+        <ng-container matColumnDef="profissional">
+          <th mat-header-cell *matHeaderCellDef> PROFISSIONAL</th>
+          <td mat-cell *matCellDef="let consulta"> Dr. {{consulta.medico.nome}} </td>
+        </ng-container>
+        <ng-container matColumnDef="data">
+          <th mat-header-cell *matHeaderCellDef> DATA</th>
+          <td mat-cell *matCellDef="let consulta"> {{consulta.dia | date: 'dd/MM/yyyy'}} </td>
+        </ng-container>
+        <ng-container matColumnDef="hora">
+          <th mat-header-cell *matHeaderCellDef> HORA</th>
+          <td mat-cell *matCellDef="let consulta"> {{consulta.horario}} </td>
+        </ng-container>
+        <ng-container matColumnDef="acao">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let consulta"> Desmarcar</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+    
+  </mat-card>
+</div>
