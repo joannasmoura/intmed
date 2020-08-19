@@ -1,6 +1,20 @@
 from rest_framework import serializers
 from clinica.models import Medico, Especialidade, Agenda,Horario, HorarioAgenda,Consulta
 from phonenumber_field.serializerfields import PhoneNumberField
+from django.utils import timezone
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 class EspecialidadeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -9,16 +23,16 @@ class EspecialidadeSerializer(serializers.ModelSerializer):
         model = Especialidade
         fields = '__all__'    
     
-class MedicoSerializer(serializers.Serializer):
+class MedicoSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     crm = serializers.CharField(required=True)
     nome = serializers.CharField(required=True, max_length=100)    
     especialidade = EspecialidadeSerializer()
     class Meta:
         model = Medico
-        fields = '__all__'
+        fields = ('id', 'crm', 'nome', 'especialidade') 
 
-class HorarioSerializer(serializers.Serializer):
+class HorarioSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     hora = serializers.TimeField()    
     class Meta:
@@ -32,7 +46,7 @@ class HorarioAgendaSerializer(serializers.HyperlinkedModelSerializer):
         model = HorarioAgenda
         fields = ('hora','dia',)
 
-class AgendaSerializer(serializers.Serializer):
+class AgendaSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     medico = MedicoSerializer()
     dia = serializers.DateField()    
@@ -43,12 +57,23 @@ class AgendaSerializer(serializers.Serializer):
         model = Agenda
         fields = ('id', 'medico', 'dia','horarios')
 
-class ConsultaSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    dia=serializers.DateField(read_only=True, source='horario_agenda.agenda.dia')
-    horario= serializers.TimeField(read_only=True, source='horario_agenda.horario.hora')
-    data_agendamento = serializers.DateTimeField()
-    medico = MedicoSerializer()        
+class ConsultaSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)        
+    dia  = serializers.ReadOnlyField(source='horario_agenda.agenda.dia', read_only=True)
+    horario = serializers.TimeField(source='horario_agenda.horario.hora',label='horario')
+    data_agendamento = serializers.DateTimeField(default=timezone.now)
+    medico = MedicoSerializer(source='horario_agenda.agenda.medico',required=False, read_only=True)
+    horario_agenda = HorarioAgendaSerializer(write_only=True,required=False)
+    agenda_id = serializers.IntegerField(write_only=True)
+    def create(self, data):
+        horario = data['horario_agenda']['horario']['hora']
+        agenda_id = data['agenda_id']
+        ha = HorarioAgenda.objects.get(agenda__id=agenda_id,horario__hora=str(horario))
+        ha.disponivel = False
+        ha.save()
+        c = Consulta(data_agendamento=data['data_agendamento'], horario_agenda=ha)
+        c.save()
+        return c
     class Meta:
         model = Consulta
-        fields = ('id','dia','horario', 'data_agendamento','medico')
+        fields = ('id', 'dia', 'horario', 'data_agendamento', 'medico','agenda_id','horario_agenda')

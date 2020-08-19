@@ -13,7 +13,7 @@ class HorarioAgendaInline(admin.TabularInline):
 
 class AgendaAdmin(admin.ModelAdmin):
     inlines = (HorarioAgendaInline,)
-    Agenda.horarios.through.__str__ = lambda x: 'Hora'
+    # Agenda.horarios.through.__str__ = lambda x: 'Oxe'
 
 admin.site.register(Agenda, AgendaAdmin)
 admin.site.register(Especialidade)

@@ -43,12 +43,14 @@ class HorarioAgenda(models.Model):
     disponivel = models.BooleanField(default=True)
     class Meta:
          db_table = "horario_agenda"
+    def __str__(self):
+        return self.agenda.medico.nome + ' - ' + self.agenda.dia.strftime("%d/%m/%Y") +' - ' + self.horario.hora.strftime("%H:%M")
 
-class Consulta(models.Model):    
-    horario_agenda = models.ForeignKey(HorarioAgenda, on_delete=models.CASCADE, null=True)
+class Consulta(models.Model):        
     data_agendamento = models.DateTimeField(default=timezone.now)
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, null=True)
+    horario_agenda = models.ForeignKey(HorarioAgenda, on_delete=models.CASCADE, null=True)
+    # owner = models.ForeignKey('auth.User', related_name='consultas', on_delete=models.CASCADE)
     class Meta:
          db_table = "consulta"
     def __str__(self):
-        return self.medico.nome + ' - ' + self.horario_agenda.agenda.dia.strftime("%d/%m/%Y") + ' - ' + self.horario_agenda.horario.hora.strftime("%H:%M")
+        return self.horario_agenda.agenda.medico.nome + ' - ' + self.horario_agenda.agenda.dia.strftime("%d/%m/%Y") + ' - ' + self.horario_agenda.horario.hora.strftime("%H:%M")
