@@ -55,7 +55,7 @@ class AgendaSerializer(serializers.ModelSerializer):
     dia = serializers.DateField()    
     horarios = serializers.SerializerMethodField()
     def get_horarios(self, agenda):
-        return agenda.horarios.values_list('hora', flat=True)
+        return agenda.horarios.filter(horarioagenda__disponivel =True).values_list('hora', flat=True)
     class Meta:
         model = Agenda
         fields = ('id', 'medico', 'dia','horarios')

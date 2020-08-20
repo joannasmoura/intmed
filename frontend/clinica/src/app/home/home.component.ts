@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     });    
   }
 
-  teste(){
+  desmarcar(){
     console.log('oi')
   }
 

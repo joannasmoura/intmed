@@ -56,6 +56,4 @@ class Consulta(models.Model):
     horario_agenda = models.ForeignKey(HorarioAgenda, on_delete=models.CASCADE, null=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     class Meta:
-         db_table = "consulta"
-    def __str__(self):
-        return self.horario_agenda.agenda.medico.nome + ' - ' + self.horario_agenda.agenda.dia.strftime("%d/%m/%Y") + ' - ' + self.horario_agenda.horario.hora.strftime("%H:%M") 
+        db_table = "consulta"

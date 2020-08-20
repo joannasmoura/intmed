@@ -3,6 +3,14 @@ table {
 }
 mat-card{
     width: 60%;
+
+    button{
+        color: white;
+        box-shadow: none;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: normal;
+    }
 }
 
 .example-spacer {
@@ -14,4 +22,13 @@ mat-card{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.mat-row:nth-child(even){
+    background-color:#F8F8F8;
+}
+
+mat-icon{
+    font-size: 18px;
+    font-weight: 700;
 }

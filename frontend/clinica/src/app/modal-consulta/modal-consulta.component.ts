@@ -22,6 +22,10 @@ export class ModalConsultaComponent implements OnInit {
   labelCancelar="Cancelar"
   primary="primary";
   secondary="secondary";
+  disabledMedico:boolean=true;
+  disabledData:boolean=true;
+  disabledHora:boolean=true;
+  buttonDisabled:boolean=true;
   consultaForm:FormGroup;
   constructor(private formBuilder: FormBuilder, private consultaService:ConsultaService,public dialogRef: MatDialogRef<ModalConsultaComponent>,) { }
 
@@ -41,31 +45,43 @@ export class ModalConsultaComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  teste(){
-    console.log('oi');
+  limpaCamposForm(campos){
+    campos.map(c=>{
+      this.consultaForm.controls[c].setValue('');
+    })
   }
 
   selectEspecialidade(espec){
     this.consultaService.getMedicos(espec.target.value).pipe(first()).subscribe(medicos => {
       this.medicos = medicos;
+      this.limpaCamposForm(['medico','hora','data']);
+      this.disabledMedico = false;
+      this.disabledData = true;
+      this.disabledHora = true;
     })
   }
 
   selectMedico(medico){
     this.consultaService.getAgendas(medico.target.value).pipe(first()).subscribe(agendas => {      
       this.agendas = agendas;
+      this.datas = [];
       agendas.map(a =>{
         this.datas.push({agenda:a.id, data:a.dia})
       })
+      this.limpaCamposForm(['hora','data']);
+      this.disabledData = false;      
     })
   }
 
   selectData(agenda){
     let agendaId = agenda.target.value;
+    this.horarios = [];
     this.agendas.find(a => a.id == agenda.target.value).horarios.map( a =>{
       this.horarios.push({agenda:agendaId, data:a})
     })
-    console.log(this.horarios)
+    this.limpaCamposForm(['hora']);
+    this.disabledHora = false;
+    this.buttonDisabled = false;
   }
 
   confirmarConsulta(){

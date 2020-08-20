@@ -1,4 +1,4 @@
-from django_filters import FilterSet, NumberFilter, CharFilter, ModelMultipleChoiceFilter, DateFilter
+from django_filters import FilterSet, NumberFilter, CharFilter, ModelMultipleChoiceFilter, DateFilter, BooleanFilter
 from .models import Consulta, Medico, Especialidade,Agenda
 
 class MedicoFilter(FilterSet):
@@ -20,6 +20,7 @@ class AgendaFilter(FilterSet):
     medico = ModelMultipleChoiceFilter(field_name='medico__id', to_field_name='id', queryset=Medico.objects.all())
     data_inicio = DateFilter(field_name='dia',lookup_expr=('gte'),) 
     data_final = DateFilter(field_name='dia',lookup_expr=('lte'))
+    horario = BooleanFilter(field_name='horarios__disponivel', lookup_expr=True)
     class Meta:
         model:Agenda
         fields = ['especialidade','medico','dia']

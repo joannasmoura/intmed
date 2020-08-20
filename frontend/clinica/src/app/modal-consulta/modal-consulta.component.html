@@ -8,19 +8,19 @@
             </select>
         </div>
         <div class="form-group">
-            <select [disabled]="medicos.length === 0" formControlName="medico" (change)="selectMedico($event)">
+            <select [attr.disabled]="disabledMedico ? true : null" formControlName="medico" (change)="selectMedico($event)">
                 <option value="" disabled selected>Médico</option>
                 <option *ngFor="let medico of medicos" [value]="medico.id">{{medico.nome}}</option> 
             </select>
         </div>
         <div class="form-group">
-            <select formControlName="data" (change)="selectData($event)">
+            <select [attr.disabled]="disabledData ? true : null" formControlName="data" (change)="selectData($event)">
                 <option value="" disabled selected>Data</option>
                 <option *ngFor="let data of datas" [value]="data.agenda">{{data.data | date: 'dd/MM/yyyy'}}</option> 
             </select>
         </div>
         <div class="form-group">
-            <select formControlName="hora">
+            <select [attr.disabled]="disabledHora ? true : null" formControlName="hora">
                 <option value="" disabled selected>Hora</option>
                 <option *ngFor="let hora of horarios" [value]="hora.data">{{hora.data}}</option> 
             </select>
@@ -32,6 +32,6 @@
         <app-button (onClick)="onNoClick()" [classe]="secondary" [label]="labelCancelar"></app-button>
     </div>                                
     <div class="button-modal">
-        <app-button (onClick)="confirmarConsulta()" [classe]="primary" [label]="labelConfirmar"></app-button>
+        <app-button (onClick)="confirmarConsulta()" [isDisabled]="buttonDisabled" [classe]="primary" [label]="labelConfirmar"></app-button>
     </div>
 </div>

@@ -7,9 +7,9 @@
 <nav class="navbar" *ngIf="currentUser">
   <mat-toolbar >
     <img class="logo-dimension" src='../../assets/logo.svg'/>
-    <span class="example-spacer"></span>
-    <span>{{currentUser.firstName}}</span>
-    <a class="nav-item nav-link" (click)="logout()">Desconectar</a>
+    <div class="example-spacer"></div>
+    <div >{{currentUser.firstName}}</div>
+    <div><a class="nav-item nav-link desconectar" (click)="logout()">Desconectar</a></div>
   </mat-toolbar>
 </nav>
 
