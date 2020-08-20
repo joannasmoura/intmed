@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Especialidade,Medico,Agenda,HorarioAgenda,Consulta
+from django.contrib.auth.admin import UserAdmin
+from .models import Especialidade,Medico,Agenda,HorarioAgenda,User
 
 class MedicoAdmin(admin.ModelAdmin):
     list_display = ('nome','especialidade','crm')
@@ -15,7 +16,7 @@ class AgendaAdmin(admin.ModelAdmin):
     inlines = (HorarioAgendaInline,)
     # Agenda.horarios.through.__str__ = lambda x: 'Oxe'
 
+admin.site.register(User, UserAdmin)
 admin.site.register(Agenda, AgendaAdmin)
 admin.site.register(Especialidade)
-admin.site.register(Consulta)
 admin.site.register(Medico,MedicoAdmin)

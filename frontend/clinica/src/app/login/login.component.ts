@@ -73,4 +73,8 @@ export class LoginComponent implements OnInit {
                 }
             );
     }
+
+    criar(){
+        this.router.navigate(['/register']);
+    }
 }

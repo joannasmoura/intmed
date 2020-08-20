@@ -2,19 +2,22 @@ from rest_framework import serializers
 from clinica.models import Medico, Especialidade, Agenda,Horario, HorarioAgenda,Consulta
 from phonenumber_field.serializerfields import PhoneNumberField
 from django.utils import timezone
-from django.contrib.auth.models import User
+from rest_framework_jwt.settings import api_settings
+from django.contrib.auth import get_user_model
+from rest_framework.fields import CurrentUserDefault
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
         return user
+    class Meta:
+        model = User
+        fields = ['username','first_name','email','password']
+        extra_kwargs = {'password': {'write_only': True}}
 
 class EspecialidadeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
@@ -65,15 +68,17 @@ class ConsultaSerializer(serializers.ModelSerializer):
     medico = MedicoSerializer(source='horario_agenda.agenda.medico',required=False, read_only=True)
     horario_agenda = HorarioAgendaSerializer(write_only=True,required=False)
     agenda_id = serializers.IntegerField(write_only=True)
+    owner = UserSerializer(default=serializers.CurrentUserDefault())
     def create(self, data):
+        user = User.objects.get(username=self.context['request'].user)
         horario = data['horario_agenda']['horario']['hora']
         agenda_id = data['agenda_id']
         ha = HorarioAgenda.objects.get(agenda__id=agenda_id,horario__hora=str(horario))
         ha.disponivel = False
         ha.save()
-        c = Consulta(data_agendamento=data['data_agendamento'], horario_agenda=ha)
-        c.save()
+        c = Consulta(data_agendamento=data['data_agendamento'], horario_agenda=ha,owner=user)
+        c.save() 
         return c
     class Meta:
         model = Consulta
-        fields = ('id', 'dia', 'horario', 'data_agendamento', 'medico','agenda_id','horario_agenda')
+        fields = ('id', 'dia', 'horario', 'data_agendamento', 'medico','agenda_id','horario_agenda','owner')

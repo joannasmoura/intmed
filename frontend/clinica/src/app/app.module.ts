@@ -21,6 +21,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ModalConsultaComponent } from './modal-consulta/modal-consulta.component';
 import { MatSelectModule } from '@angular/material/select';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MatSelectModule } from '@angular/material/select';
     LoginComponent,
     HomeComponent,
     ButtonComponent,
-    ModalConsultaComponent
+    ModalConsultaComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

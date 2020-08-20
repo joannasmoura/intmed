@@ -1,16 +1,37 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404,render
 from django.db.models import Q
-from rest_framework import status
+from rest_framework import status,exceptions
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.http import HttpResponse,Http404
-from .models import Consulta, Medico, Especialidade, Agenda
+from .models import Consulta, Medico, Especialidade, Agenda,User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .serializers import EspecialidadeSerializer, MedicoSerializer, AgendaSerializer, ConsultaSerializer,UserSerializer
 from .filters import MedicoFilter, EspecialidadeFilter, AgendaFilter
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['firstName'] = user.first_name
+        token['username'] = user.username
+        token['id'] = user.id
+        # ...
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class UserCreate(generics.CreateAPIView):
+    User = get_user_model()
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny, )
@@ -32,15 +53,15 @@ class AgendaList(generics.ListCreateAPIView):
     serializer_class = AgendaSerializer
     queryset = Agenda.objects.all()    
     filter_class = AgendaFilter
-
+    
 class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Consulta.objects.all()
     serializer_class = ConsultaSerializer
     def post(self, request, format=None):
-        serializer = ConsultaSerializer(data=request.data)
-        if serializer.is_valid():            
-            serializer.save(owner=self.request.user)
+        serializer = ConsultaSerializer(data=request.data,context={'request':request})
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -49,14 +70,3 @@ def index(request):
     consultas = Consulta.objects.all()
     context = {'consultas':consultas}    
     return render(request, 'clinica/index.html', context)
-
-def detail(request, consulta_id):
-    consulta = get_object_or_404(Consulta, pk=consulta_id)
-    return render(request,'clinica/details.html',{'consulta':consulta})
-
-def results(request, medico_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % medico_id)
-
-def vote(request, medico_id):
-    return HttpResponse("You're voting on question %s." % medico_id)

@@ -1,6 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+class User(AbstractUser):
+    pass
 
 class Especialidade(models.Model):
     nome = models.CharField(max_length=255, default='')
@@ -49,8 +54,8 @@ class HorarioAgenda(models.Model):
 class Consulta(models.Model):        
     data_agendamento = models.DateTimeField(default=timezone.now)
     horario_agenda = models.ForeignKey(HorarioAgenda, on_delete=models.CASCADE, null=True)
-    # owner = models.ForeignKey('auth.User', related_name='consultas', on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     class Meta:
          db_table = "consulta"
     def __str__(self):
-        return self.horario_agenda.agenda.medico.nome + ' - ' + self.horario_agenda.agenda.dia.strftime("%d/%m/%Y") + ' - ' + self.horario_agenda.horario.hora.strftime("%H:%M")
+        return self.horario_agenda.agenda.medico.nome + ' - ' + self.horario_agenda.agenda.dia.strftime("%d/%m/%Y") + ' - ' + self.horario_agenda.horario.hora.strftime("%H:%M") 

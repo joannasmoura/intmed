@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="form">
+        <img src='../../assets/logo.svg'/>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayoutAlign="center center" fxLayout="column wrap">
+            <div class="form-group">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nome</mat-label>
+                    <input matInput type="text" formControlName="nome" id="nome">
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="text" formControlName="email" id="email">
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <mat-form-field appearance="outline">
+                    <mat-label>Senha</mat-label>
+                    <input matInput type="password" formControlName="password" id="password">
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <mat-form-field appearance="outline">
+                    <mat-label>Confirmar Senha</mat-label>
+                    <input matInput type="password" formControlName="passwordConfirm" id="passwordConfirm">
+                </mat-form-field>
+            </div>
+            <div class="button-container">
+                <div>
+                    <app-button (onClick)="cancelar()" [classe]="secondary" [label]="labelCancelar"></app-button>
+                </div>                                
+                <div>
+                    <app-button (onClick)="onSubmit()" [classe]="primary" [label]="labelConfirmar"></app-button>
+                </div>                
+            </div>            
+            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+        </form>
+    </div>
+</div>
