@@ -52,12 +52,17 @@ class EspecialidadeList(generics.ListCreateAPIView):
 class AgendaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AgendaSerializer
-    queryset = Agenda.objects.all()    
+    queryset = Agenda.objects.all().order_by('dia').exclude(dia__lte=datetime.date.today())
     filter_class = AgendaFilter
     
 class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Consulta.objects.all()
+    queryset = Consulta.objects.all().order_by(
+        'horario_agenda__agenda__dia',
+        'horario_agenda__horario__hora'
+        ).exclude(
+            horario_agenda__agenda__dia__lte=datetime.date.today()
+        )
     serializer_class = ConsultaSerializer
     def post(self, request, format=None):
         serializer = ConsultaSerializer(data=request.data,context={'request':request})
@@ -68,7 +73,6 @@ class ConsultaList(generics.ListCreateAPIView):
     def delete(self, request, pk, format=None):
         try:
             consulta = self.get_object()
-            
         except Consulta.DoesNotExist:
            return Response(status=status.HTTP_404_NOT_FOUND)
         if consulta.owner != request.user:        

@@ -71,9 +71,11 @@ class ConsultaSerializer(serializers.ModelSerializer):
     owner = UserSerializer(default=serializers.CurrentUserDefault())
     def create(self, data):
         user = User.objects.get(username=self.context['request'].user)
+        print(data['horario_agenda']['horario'])
         horario = data['horario_agenda']['horario']['hora']
-        agenda_id = data['agenda_id']
+        agenda_id = data['agenda_id']        
         ha = HorarioAgenda.objects.get(agenda__id=agenda_id,horario__hora=str(horario))
+        
         ha.disponivel = False
         ha.save()
         c = Consulta(data_agendamento=data['data_agendamento'], horario_agenda=ha,owner=user)
