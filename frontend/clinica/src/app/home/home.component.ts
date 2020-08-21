@@ -23,14 +23,15 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.consultaService.getAll().pipe(first()).subscribe(consultas => {
-      console.log(consultas)
         this.consultas = consultas;
     });    
   }
 
   desmarcar(consulta){
     this.consultaService.desmarcarConsulta(consulta).subscribe(retorno =>{
-      console.log(retorno);
+      if(retorno){
+        
+      }
     });
   }
 

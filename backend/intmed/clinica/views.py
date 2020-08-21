@@ -1,3 +1,4 @@
+import datetime
 from django.conf import settings
 from django.shortcuts import get_object_or_404,render
 from django.db.models import Q
@@ -64,6 +65,18 @@ class ConsultaList(generics.ListCreateAPIView):
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        print(request.user.id)
+        try:
+            consulta = self.get_object()
+        except Consulta.DoesNotExist:
+           return Response(status=status.HTTP_404_NOT_FOUND)
+        if consulta.owner != request.user:        
+            return Response(status=status.HTTP_403_FORBIDDEN,data={"detail":"Apenas o usuário que marcou a consulta pode desmarcá-la"})
+        if consulta.horario_agenda.agenda.dia < datetime.date.today():
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,data={"detail":"Não é possível desmarcar pois a data da consulta ja passou"})
+        consulta.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 def index(request):
     permission_classes = (IsAuthenticated,)

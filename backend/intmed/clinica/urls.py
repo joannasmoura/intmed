@@ -13,6 +13,7 @@ urlpatterns=[
     url(r'^especialidades/$', views.EspecialidadeList.as_view(), name='especialidade-list'),
     url(r'^agendas/$', views.AgendaList.as_view(), name='agenda-list'),
     url(r'^consultas/$', views.ConsultaList.as_view(), name='consulta-list'),
+    path('consultas/<int:pk>/', views.ConsultaList.as_view()),
     path('login/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh-token/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
