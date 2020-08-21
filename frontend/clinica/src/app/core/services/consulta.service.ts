@@ -31,4 +31,8 @@ export class ConsultaService {
     marcarConsulta(agenda){
         return this.http.post<Data>(`${environment.apiUrl}/consultas/`, {agenda_id:agenda.data, horario:agenda.hora});
     }
+
+    desmarcarConsulta(consulta){
+        return this.http.delete<Data>(`${environment.apiUrl}/consultas/${consulta}`);
+    }
 }

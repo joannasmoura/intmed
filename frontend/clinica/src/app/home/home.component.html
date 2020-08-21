@@ -30,7 +30,7 @@
         <ng-container matColumnDef="acao">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let consulta"> 
-            <a class="nav-item nav-link" (click)="desmarcar()">
+            <a mat-button class="nav-item nav-link" (click)="desmarcar(consulta.id)">
               <mat-icon aria-hidden="false">close</mat-icon>
               Desmarcar
             </a>

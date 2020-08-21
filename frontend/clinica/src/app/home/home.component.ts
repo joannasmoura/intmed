@@ -28,8 +28,10 @@ export class HomeComponent implements OnInit {
     });    
   }
 
-  desmarcar(){
-    console.log('oi')
+  desmarcar(consulta){
+    this.consultaService.desmarcarConsulta(consulta).subscribe(retorno =>{
+      console.log(retorno);
+    });
   }
 
   openDialog() {
