@@ -19,6 +19,10 @@
         &:hover{
             background:$hover-primary;
         }
+        &:disabled{
+            background:$hover-primary;
+            cursor:not-allowed;
+        }
     }
 
     &.secondary{
@@ -27,11 +31,11 @@
         &:hover{
             background:$hover-secondary;
         }
-    }
-
-    &.link{
-        
-    }
+        &:disabled{
+            background:$hover-secondary;
+            cursor:not-allowed;
+        }
+    }    
 
     &:focus{
         outline: none;

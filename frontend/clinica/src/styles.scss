@@ -74,6 +74,16 @@ a{
   color:#49b4bb;
 }
 
+.logo{
+  padding-right: 33%;
+  width: 180px;
+  height: 50px;
+  padding-bottom: 40px;
+}
+
+mat-icon{
+  color: #A8A8A8;
+}
 
 ::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.4em 0px !important;}
 ::ng-deep .mat-form-field-label-wrapper { top: -1.5em; }
@@ -81,4 +91,17 @@ a{
 ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
     transform: translateY(-1.1em) scale(.75);
     width: 133.33333%;
+}
+
+.error-box{
+  text-align: -webkit-center;
+  margin-top: 10px;
+  div{
+      border: 1px solid #f7acac;
+      border-radius: 3px;
+      background-color: #ffdce0;
+      color: #934551;
+      width: 62%;
+      font-size: 14px;
+  }    
 }

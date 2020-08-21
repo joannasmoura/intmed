@@ -1,40 +1,56 @@
 <div class="container">
     <div class="form">
-        <img src='../../assets/logo.svg'/>
+        <img class="logo" src='../../assets/logo.svg'/>
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayoutAlign="center center" fxLayout="column wrap">
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Nome</mat-label>
                     <input matInput type="text" formControlName="nome" id="nome">
+                    <mat-error *ngIf="nome.invalid">Por favor, digite seu nome</mat-error>
                 </mat-form-field>
             </div>
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Email</mat-label>
                     <input matInput type="text" formControlName="email" id="email">
+                    <mat-error *ngIf="email.invalid">Por favor, digite um endereço de e-mail</mat-error>
                 </mat-form-field>
             </div>
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Senha</mat-label>
-                    <input matInput type="password" formControlName="password" id="password">
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" id="password">
+                    <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+                        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="password.invalid">Por favor, digite uma senha</mat-error>
                 </mat-form-field>
             </div>
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Confirmar Senha</mat-label>
-                    <input matInput type="password" formControlName="passwordConfirm" id="passwordConfirm">
+                    <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="passwordConfirm" id="passwordConfirm">
+                    <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword">
+                        <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="f.passwordConfirm.errors  && f.passwordConfirm.errors.confirmedValidator">
+                        A senha e a confirmação de senha não são iguais
+                    </mat-error>
                 </mat-form-field>
+            </div>
+            <div *ngIf="error" class="error-box">
+                <div class="error-box">
+                    <p>{{error}}</p>
+                </div>
             </div>
             <div class="button-container">
                 <div>
                     <app-button (onClick)="cancelar()" [classe]="secondary" [label]="labelCancelar"></app-button>
                 </div>                                
                 <div>
-                    <app-button (onClick)="onSubmit()" [classe]="primary" [label]="labelConfirmar"></app-button>
+                    <app-button (onClick)="onSubmit()" [classe]="primary" [label]="labelConfirmar" [isDisabled]="registerForm.invalid"></app-button>
                 </div>                
             </div>            
-            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
         </form>
     </div>
 </div>

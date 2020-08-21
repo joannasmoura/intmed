@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private authenticationService: AuthenticationService
     ) { 
-        // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) { 
             this.router.navigate(['/']);
         }
@@ -37,9 +36,9 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required, Validators],
-            password: ['', Validators.required],
-            lembrarSenha: [false, Validators.required]
+            username: ['', [Validators.required]],
+            password: ['', [Validators.required]],
+            lembrarSenha: [false, [Validators.required]]
         });
 
         // get return url from route parameters or default to '/'

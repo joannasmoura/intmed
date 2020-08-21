@@ -4,7 +4,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-class User(AbstractUser):
+class User(AbstractUser):    
     pass
 
 class Especialidade(models.Model):
