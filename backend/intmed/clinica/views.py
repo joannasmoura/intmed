@@ -6,7 +6,7 @@ from rest_framework import status,exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.http import HttpResponse,Http404
-from .models import Consulta, Medico, Especialidade, Agenda,User
+from .models import Consulta, Medico, Especialidade, Agenda,User,HorarioAgenda
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .serializers import EspecialidadeSerializer, MedicoSerializer, AgendaSerializer, ConsultaSerializer,UserSerializer
@@ -66,16 +66,19 @@ class ConsultaList(generics.ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, pk, format=None):
-        print(request.user.id)
         try:
             consulta = self.get_object()
+            
         except Consulta.DoesNotExist:
            return Response(status=status.HTTP_404_NOT_FOUND)
         if consulta.owner != request.user:        
             return Response(status=status.HTTP_403_FORBIDDEN,data={"detail":"Apenas o usuário que marcou a consulta pode desmarcá-la"})
         if consulta.horario_agenda.agenda.dia < datetime.date.today():
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,data={"detail":"Não é possível desmarcar pois a data da consulta ja passou"})
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,data={"detail":"Não é possível desmarcar pois a data da consulta ja passou"})        
         consulta.delete()
+        ha = HorarioAgenda.objects.get(pk=consulta.horario_agenda.id)
+        ha.disponivel = True
+        ha.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 def index(request):
