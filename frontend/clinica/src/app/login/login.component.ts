@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
     labelCriar = "Criar Conta";
     primary = "primary";
     secondary = "secondary";
+    hide = true;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
+            username: ['', Validators.required, Validators],
             password: ['', Validators.required],
             lembrarSenha: [false, Validators.required]
         });
@@ -45,33 +46,44 @@ export class LoginComponent implements OnInit {
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     }
 
-    teste(event){
-        console.log('clicou',event)
+    get username() {
+        return this.loginForm.get('username');
+    }
+    get password() {
+        return this.loginForm.get('password');
     }
 
-    // convenience getter for easy access to form fields
+    public errorMessages = {
+        username: [
+          { type: 'required', message: 'Por favor, digite um e-mail ou login' },
+        ],
+        password: [
+          { type: 'required', message: 'Por favor, digite uma senha' },
+        ],
+    };
+
+
     get f() { return this.loginForm.controls; }
 
     onSubmit() {
         this.submitted = true;
-
-        // stop here if form is invalid
         if (this.loginForm.invalid) {
             return;
         }
 
         this.loading = true;
-        this.authenticationService.login(this.loginForm.value)
-            .pipe(first())
-            .subscribe(
-                data => {
-                    this.router.navigate([this.returnUrl]);
-                },
-                error => {
-                    this.error = error;
-                    this.loading = false;
-                }
-            );
+        this.authenticationService.login(this.loginForm.value).subscribe(
+            data => {
+                this.router.navigate([this.returnUrl]);
+            },
+            err => {       
+                if(err.status == 401){
+                    this.error = "Usuário ou senha incorretos."
+                }else{
+                    this.error = err.error.message;
+                }    
+            }
+        );
     }
 
     criar(){

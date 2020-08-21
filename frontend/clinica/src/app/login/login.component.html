@@ -1,21 +1,32 @@
 <div class="container">
     <div class="form">
-        <img src='../../assets/logo.svg'/>
+        <img class="logo" src='../../assets/logo.svg'/>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" fxLayoutAlign="center center" fxLayout="column wrap">
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Email ou Login</mat-label>
                     <input matInput type="text" formControlName="username" id="username">
+                    <mat-error *ngIf="username.invalid">Por favor, digite um e-mail ou login</mat-error>
                 </mat-form-field>
             </div>
             <div class="form-group">
                 <mat-form-field appearance="outline">
                     <mat-label>Senha</mat-label>
-                    <input matInput type="password" formControlName="password" id="password">
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" id="password">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="password.invalid">Por favor, digite uma senha</mat-error>
                 </mat-form-field>
             </div>
             <div class="form-group">
                 <mat-checkbox formControlName="lembrarSenha">Lembrar minha senha</mat-checkbox>
+            </div>
+            <div *ngIf="error" class="error-box">
+                <div class="error-box">
+                    <p>{{error}}</p>
+                </div>
             </div>
             <div class="button-container">
                 <div>
@@ -25,7 +36,6 @@
                     <app-button (onClick)="onSubmit()" [classe]="primary" [label]="labelAcessar"></app-button>
                 </div>                
             </div>            
-            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
         </form>
     </div>
 </div>

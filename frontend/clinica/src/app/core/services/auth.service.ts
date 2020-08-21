@@ -22,21 +22,20 @@ export class AuthenticationService {
         return this.authState.value;
     }
 
-    login(user:User) {
-        return this.http.post(`${environment.apiUrl}/login/`, user)
-            .pipe(
-                tap(async (res: AuthResponse) => {
-                    if (res.access) {
-                        let payload = helper.decodeToken(res.access)
-                        let user = {username:payload.username, firstName:payload.firstName, id:payload.id} 
-                        localStorage.setItem('access_token', res.access)
-                        localStorage.setItem('refresh_token', res.refresh)
-                        localStorage.setItem('currentUser', JSON.stringify(user));
-                        this.authState.next(user);
-                        return user;
-                    }
-                })
-            );
+    login(user:User): Observable<AuthResponse> {
+        return this.http.post(`${environment.apiUrl}/login/`, user).pipe(
+            tap(async (res: AuthResponse) => {
+                if (res.access) {
+                    let payload = helper.decodeToken(res.access)
+                    let user = {username:payload.username, firstName:payload.firstName, id:payload.id} 
+                    localStorage.setItem('access_token', res.access)
+                    localStorage.setItem('refresh_token', res.refresh)
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    this.authState.next(user);
+                    return user;
+                }
+            })
+        );
     }
 
     register(user:User) {

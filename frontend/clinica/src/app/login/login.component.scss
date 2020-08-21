@@ -20,8 +20,36 @@
     align-items: center;
     justify-content: center;
     padding-top: 20px;
+    div{
+        padding-left: 20px;
+        padding-right: 20px;
+    }    
 }
 
 input:hover{
     outline:none
+}
+
+mat-icon{
+    color: #A8A8A8;
+}
+
+.logo{
+    padding-right: 33%;
+    width: 180px;
+    height: 50px;
+    padding-bottom: 40px;
+}
+
+.error-box{
+    text-align: -webkit-center;
+    margin-top: 10px;
+    div{
+        border: 1px solid #f7acac;
+        border-radius: 3px;
+        background-color: #ffdce0;
+        color: #934551;
+        width: 62%;
+        font-size: 14px;
+    }    
 }
