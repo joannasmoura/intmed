@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import get_object_or_404,render
 from django.db.models import Q
@@ -14,7 +15,7 @@ from .filters import MedicoFilter, EspecialidadeFilter, AgendaFilter
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+timeNow = timezone.localtime(timezone.now()) 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -52,7 +53,7 @@ class EspecialidadeList(generics.ListCreateAPIView):
 class AgendaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AgendaSerializer
-    queryset = Agenda.objects.all().order_by('dia').exclude(dia__lte=datetime.date.today())
+    queryset = Agenda.objects.all().order_by('dia').exclude(dia__lt=datetime.date.today())
     filter_class = AgendaFilter
     
 class ConsultaList(generics.ListCreateAPIView):
@@ -61,7 +62,9 @@ class ConsultaList(generics.ListCreateAPIView):
         'horario_agenda__agenda__dia',
         'horario_agenda__horario__hora'
         ).exclude(
-            horario_agenda__agenda__dia__lte=datetime.date.today()
+            horario_agenda__agenda__dia__lt=timeNow)            
+        ).exclude(
+            horario_agenda__horario__hora__lt=str(timeNow.time())
         )
     serializer_class = ConsultaSerializer
     def post(self, request, format=None):

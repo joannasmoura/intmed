@@ -6,6 +6,7 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model
 from rest_framework.fields import CurrentUserDefault
 User = get_user_model()
+timeNow = timezone.localtime(timezone.now()) 
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -55,7 +56,10 @@ class AgendaSerializer(serializers.ModelSerializer):
     dia = serializers.DateField()    
     horarios = serializers.SerializerMethodField()
     def get_horarios(self, agenda):
-        return agenda.horarios.filter(horarioagenda__disponivel =True).values_list('hora', flat=True)
+        print(str(timeNow.time().strftime("%H:%M")))
+        return agenda.horarios.filter(horarioagenda__disponivel =True).exclude(
+            horarioagenda__horario__hora__lt=str(timeNow.time().strftime("%H:%M"))
+        ).values_list('hora', flat=True)
     class Meta:
         model = Agenda
         fields = ('id', 'medico', 'dia','horarios')
@@ -71,14 +75,13 @@ class ConsultaSerializer(serializers.ModelSerializer):
     owner = UserSerializer(default=serializers.CurrentUserDefault())
     def create(self, data):
         user = User.objects.get(username=self.context['request'].user)
-        print(data['horario_agenda']['horario'])
+        print(timeNow)
         horario = data['horario_agenda']['horario']['hora']
         agenda_id = data['agenda_id']        
         ha = HorarioAgenda.objects.get(agenda__id=agenda_id,horario__hora=str(horario))
-        
         ha.disponivel = False
         ha.save()
-        c = Consulta(data_agendamento=data['data_agendamento'], horario_agenda=ha,owner=user)
+        c = Consulta(data_agendamento=timeNow, horario_agenda=ha,owner=user)
         c.save() 
         return c
     class Meta:
