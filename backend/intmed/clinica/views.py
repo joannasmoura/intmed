@@ -122,9 +122,8 @@ def hasDiaHorarioPassed(request):
         agenda = Agenda.objects.get(pk=request.data['agenda_id'])
     except:
         return False
-    dia = datetime.datetime.combine(agenda.dia, datetime.time(0, 0))
     horario = request.data['horario']
-    if dia > timeNow.today():
+    if agenda.dia > timeNow.today().date():
         return True
     elif horario < str(timeNow.time()):
         return True
@@ -139,18 +138,3 @@ def hasDiaHorarioBeenFilled(request):
     except:
         return False
     return consultaExistente
-
-# def get(self, request, format=None):
-#     user = User.objects.get(username=request.user)
-    # queryset = Consulta.objects.all().filter(
-    #     owner__id=user.id
-    # ).order_by(
-    # 'horario_agenda__agenda__dia',
-    # 'horario_agenda__horario__hora'
-    # ).exclude(
-    #     horario_agenda__agenda__dia__lt=timeNow
-    # ).exclude(
-    #     horario_agenda__horario__hora__lt=str(timeNow.time())
-    # )
-#     serializer = ConsultaSerializer(queryset)
-#     return Response(serializer.data)

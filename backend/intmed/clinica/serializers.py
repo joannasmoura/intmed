@@ -58,7 +58,7 @@ class AgendaSerializer(serializers.ModelSerializer):
     def get_horarios(self, agenda):
         print(str(timeNow.time().strftime("%H:%M")))
         return agenda.horarios.filter(horarioagenda__disponivel =True).exclude(
-            horarioagenda__horario__hora__lt=str(timeNow.time().strftime("%H:%M"))
+            horarioagenda__horario__hora__lt=timeNow.time().strftime("%H:%M")
         ).values_list('hora', flat=True)
     class Meta:
         model = Agenda
