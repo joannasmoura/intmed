@@ -14,7 +14,7 @@ class HorarioAgendaInline(admin.TabularInline):
     verbose_name_plural = "Horários"    
 
 
-class AgendaAdmin(admin.ModelAdmin):
+class AgendaAdmin(admin.ModelAdmin):    
     form = AgendaAdminForm
     inlines = (HorarioAgendaInline,)
 

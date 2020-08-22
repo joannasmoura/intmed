@@ -2,7 +2,7 @@ import datetime
 from django.utils import timezone
 from django.conf import settings
 from django.shortcuts import get_object_or_404,render
-from django.db.models import Q
+from django.db.models import Q, Count
 from rest_framework import status,exceptions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -53,9 +53,14 @@ class EspecialidadeList(generics.ListCreateAPIView):
 class AgendaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AgendaSerializer
-    queryset = Agenda.objects.all().order_by('dia').exclude(dia__lt=datetime.date.today())
+    queryset = Agenda.objects.all().order_by('dia').annotate(
+        no_of_horarios=Count('horarios')
+    ).filter(
+        no_of_horarios__gte=1
+    ).exclude(
+        dia__lt=datetime.date.today(),
+    )
     filter_class = AgendaFilter
-    
 class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Consulta.objects.all()
@@ -63,15 +68,14 @@ class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     def get_queryset(self):
         user = User.objects.get(username=self.request.user)
-        consultas = Consulta.objects.all().filter(
-            owner__id=user.id
+        consultas = Consulta.objects.filter(owner__id=user.id).exclude(
+            horario_agenda__in= HorarioAgenda.objects.filter(
+                agenda__dia__lte=timeNow.date(),
+                horario__hora__lte=str(timeNow.time())
+            ),
         ).order_by(
-        'horario_agenda__agenda__dia',
-        'horario_agenda__horario__hora'
-        ).exclude(
-            horario_agenda__agenda__dia__lt=timeNow
-        ).exclude(
-            horario_agenda__horario__hora__lt=str(timeNow.time())
+            'horario_agenda__agenda__dia',
+            'horario_agenda__horario__hora'
         )
         return consultas
     def post(self, request, format=None):
@@ -123,10 +127,10 @@ def hasDiaHorarioPassed(request):
     except:
         return False
     horario = request.data['horario']
-    if agenda.dia > timeNow.today().date():
+    if agenda.dia < timeNow.today().date():
         return True
-    elif horario < str(timeNow.time()):
-        return True
+    # elif horario < str(timeNow.time()):
+    #     return True
     else:
         return False
 
