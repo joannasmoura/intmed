@@ -58,7 +58,14 @@ class AgendaList(generics.ListCreateAPIView):
     
 class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
-    queryset = Consulta.objects.all().order_by(
+    queryset = Consulta.objects.all()
+    serializer_class = ConsultaSerializer
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        user = User.objects.get(username=self.request.user)
+        consultas = Consulta.objects.all().filter(
+            owner__id=user.id
+        ).order_by(
         'horario_agenda__agenda__dia',
         'horario_agenda__horario__hora'
         ).exclude(
@@ -66,7 +73,7 @@ class ConsultaList(generics.ListCreateAPIView):
         ).exclude(
             horario_agenda__horario__hora__lt=str(timeNow.time())
         )
-    serializer_class = ConsultaSerializer
+        return consultas
     def post(self, request, format=None):
         if hasConsultaDiaHorario(request):
             return Response(status=status.HTTP_400_BAD_REQUEST,data={"detail":"Você ja possui uma consulta marcada para esse dia e horário."})
@@ -132,3 +139,18 @@ def hasDiaHorarioBeenFilled(request):
     except:
         return False
     return consultaExistente
+
+# def get(self, request, format=None):
+#     user = User.objects.get(username=request.user)
+    # queryset = Consulta.objects.all().filter(
+    #     owner__id=user.id
+    # ).order_by(
+    # 'horario_agenda__agenda__dia',
+    # 'horario_agenda__horario__hora'
+    # ).exclude(
+    #     horario_agenda__agenda__dia__lt=timeNow
+    # ).exclude(
+    #     horario_agenda__horario__hora__lt=str(timeNow.time())
+    # )
+#     serializer = ConsultaSerializer(queryset)
+#     return Response(serializer.data)
