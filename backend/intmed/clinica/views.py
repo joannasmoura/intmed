@@ -62,12 +62,16 @@ class ConsultaList(generics.ListCreateAPIView):
         'horario_agenda__agenda__dia',
         'horario_agenda__horario__hora'
         ).exclude(
-            horario_agenda__agenda__dia__lt=timeNow)            
+            horario_agenda__agenda__dia__lt=timeNow
         ).exclude(
             horario_agenda__horario__hora__lt=str(timeNow.time())
         )
     serializer_class = ConsultaSerializer
     def post(self, request, format=None):
+        if hasDiaHorarioPassed(request):
+            return Response(status=status.HTTP_400_BAD_REQUEST,data={"detail":"O dia e o horário que você está tentando amrcar a consulta ja passaram."})
+        if hasConsultaDiaHorario(request):
+            return Response(status=status.HTTP_400_BAD_REQUEST,data={"detail":"Você ja possui uma consulta marcada para esse dia e horário."})        
         serializer = ConsultaSerializer(data=request.data,context={'request':request})
         if serializer.is_valid():
             serializer.save(owner=request.user)
@@ -79,9 +83,9 @@ class ConsultaList(generics.ListCreateAPIView):
         except Consulta.DoesNotExist:
            return Response(status=status.HTTP_404_NOT_FOUND)
         if consulta.owner != request.user:        
-            return Response(status=status.HTTP_403_FORBIDDEN,data={"detail":"Apenas o usuário que marcou a consulta pode desmarcá-la"})
+            return Response(status=status.HTTP_403_FORBIDDEN,data={"detail":"Apenas o usuário que marcou a consulta pode desmarcá-la."})
         if consulta.horario_agenda.agenda.dia < datetime.date.today():
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,data={"detail":"Não é possível desmarcar pois a data da consulta ja passou"})        
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE,data={"detail":"Não é possível desmarcar pois a data da consulta ja passou."})        
         consulta.delete()
         ha = HorarioAgenda.objects.get(pk=consulta.horario_agenda.id)
         ha.disponivel = True
@@ -93,3 +97,21 @@ def index(request):
     consultas = Consulta.objects.all()
     context = {'consultas':consultas}    
     return render(request, 'clinica/index.html', context)
+
+def hasConsultaDiaHorario(request):
+    user = User.objects.get(username=request.user)
+    agenda = Agenda.objects.get(pk=request.data['agenda_id'])
+    consultaExistente = Consulta.objects.get(owner=user,horario_agenda__agenda__dia =agenda.dia,horario_agenda__horario__hora=request.data['horario'])
+    return consultaExistente
+
+def hasDiaHorarioPassed(request):
+    agenda = Agenda.objects.get(pk=request.data['agenda_id'])
+    dia = datetime.datetime.combine(agenda.dia, datetime.time(0, 0))
+    horario = request.data['horario']
+    print(dia)
+    if dia > timeNow.today():
+        return True
+    elif horario < str(timeNow.time()):
+        return True
+    else:
+        return False
