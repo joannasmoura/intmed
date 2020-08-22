@@ -72,7 +72,7 @@ class ConsultaSerializer(serializers.ModelSerializer):
     medico = MedicoSerializer(source='horario_agenda.agenda.medico',required=False, read_only=True)
     horario_agenda = HorarioAgendaSerializer(write_only=True,required=False)
     agenda_id = serializers.IntegerField(write_only=True)
-    owner = UserSerializer(default=serializers.CurrentUserDefault())
+    owner = UserSerializer(default=serializers.CurrentUserDefault(), write_only=True)
     def create(self, data):
         user = User.objects.get(username=self.context['request'].user)
         horario = data['horario_agenda']['horario']['hora']
