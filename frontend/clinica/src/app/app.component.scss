@@ -4,6 +4,10 @@
 
 .mat-toolbar{
     background:white;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 1000;
     div{
         font-style: normal;
         font-weight: normal;

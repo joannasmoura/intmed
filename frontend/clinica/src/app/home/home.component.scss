@@ -2,8 +2,13 @@ table {
     width: 100%;
 }
 mat-card{
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    overflow: auto;
     width: 60%;
-
     button{
         color: white;
         box-shadow: none;
