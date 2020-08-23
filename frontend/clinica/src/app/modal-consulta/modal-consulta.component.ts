@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {MatDialogRef} from '@angular/material/dialog';
+import { Component, OnInit,Inject,EventEmitter } from '@angular/core';
+import { MatDialogRef, MatDialog, MatDialogConfig,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConsultaService } from '../core/services/consulta.service';
 import { Especialidade } from '../core/models/especialidade';
 import { first } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Medico } from '../core/models/medico';
 import { Agenda } from '../core/models/agenda';
 import { Data } from '../core/models/data';
+import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
 @Component({
   selector: 'app-modal-consulta',
   templateUrl: './modal-consulta.component.html',
@@ -27,7 +28,13 @@ export class ModalConsultaComponent implements OnInit {
   disabledHora:boolean=true;
   buttonDisabled:boolean=true;
   consultaForm:FormGroup;
-  constructor(private formBuilder: FormBuilder, private consultaService:ConsultaService,public dialogRef: MatDialogRef<ModalConsultaComponent>,) { }
+  
+  constructor(
+    private formBuilder: FormBuilder, 
+    private consultaService:ConsultaService,
+    public dialogRef: MatDialogRef<ModalConsultaComponent>,
+    private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: {getConsultas}) { }
 
   ngOnInit(): void {
     this.consultaForm = this.formBuilder.group({
@@ -85,8 +92,18 @@ export class ModalConsultaComponent implements OnInit {
   }
 
   confirmarConsulta(){
+    this.dialogRef.close();
     this.consultaService.marcarConsulta(this.consultaForm.value).subscribe(retorno =>{
-      console.log(retorno)
+      this.abrirModalMensagem("Consulta marcada com sucesso!", true);
+    },
+    err =>{
+      this.abrirModalMensagem(err.error.detail, false);
     })
+  }
+
+  abrirModalMensagem(message, success) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {message:message, success:success}
+    this.dialog.open(ModalMessageComponent, dialogConfig);
   }
 }

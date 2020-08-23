@@ -22,21 +22,25 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
+    this.getConsultas();
+  }
+
+  getConsultas(){
     this.consultaService.getAll().pipe(first()).subscribe(consultas => {
-        this.consultas = consultas;
-    });    
+      this.consultas = consultas;
+    }); 
   }
 
   desmarcar(consulta){
     this.consultaService.desmarcarConsulta(consulta).subscribe(
       data =>{
-        this.abrirModalDesmarcarErro("Consulta desmarcada com sucesso!");
+        this.abrirModalMensagem("Consulta desmarcada com sucesso!", true);
         this.consultaService.getAll().pipe(first()).subscribe(consultas => {
           this.consultas = consultas;
         });  
       }, 
       err =>{
-        this.abrirModalDesmarcarErro(err.error.detail)
+        this.abrirModalMensagem(err.error.detail, false)
       }
     );
   }
@@ -44,12 +48,18 @@ export class HomeComponent implements OnInit {
   abrirModalMarcarConsulta() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
-    this.dialog.open(ModalConsultaComponent, dialogConfig);
+    let dialogRef = this.dialog.open(ModalConsultaComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(res =>{
+      this.getConsultas()
+    })
   }
 
-  abrirModalDesmarcarErro(message) {
+  abrirModalMensagem(message, success) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {message:message}
-    this.dialog.open(ModalMessageComponent, dialogConfig);
+    dialogConfig.data = {message:message, success:success,getConsultas:this.getConsultas}
+    let dialogRef = this.dialog.open(ModalMessageComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(res =>{
+      this.getConsultas()
+    })
   }
 }

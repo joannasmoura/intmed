@@ -16,3 +16,14 @@ select{
 form{
     text-align: center;
 }
+
+.button-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    div{
+        padding-left: 20px;
+        padding-right: 20px;
+    }    
+}

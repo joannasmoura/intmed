@@ -9,12 +9,14 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 export class ModalMessageComponent implements OnInit {
   labelConfirmar="Ok"
   primary="primary";
+  src=""
   constructor(
     public dialogRef: MatDialogRef<ModalMessageComponent>, 
-    @Inject(MAT_DIALOG_DATA) public data: {message:string}
+    @Inject(MAT_DIALOG_DATA) public data: {message:string, success:boolean, width: '400px'}
   ) { }
 
   ngOnInit(): void {
+    this.src = this.data.success ? "../../../assets/check.svg" : "../../../assets/error.svg";
   }
 
   onOkClick(): void {
