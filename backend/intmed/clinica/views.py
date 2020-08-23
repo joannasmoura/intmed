@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 timeNow = timezone.localtime(timezone.now()) 
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -61,18 +62,22 @@ class AgendaList(generics.ListCreateAPIView):
         dia__lt=datetime.date.today(),
     )
     filter_class = AgendaFilter
+
 class ConsultaList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Consulta.objects.all()
     serializer_class = ConsultaSerializer
     permission_classes = (IsAuthenticated,)
     def get_queryset(self):
+        print(timeNow.time())
         user = User.objects.get(username=self.request.user)
         consultas = Consulta.objects.filter(owner__id=user.id).exclude(
-            horario_agenda__in= HorarioAgenda.objects.filter(
-                agenda__dia__lte=timeNow.date(),
-                horario__hora__lte=str(timeNow.time())
-            ),
+            horario_agenda__in= HorarioAgenda.objects.exclude(
+                agenda__dia__gte=timeNow.date(),
+            )
+        ).exclude(
+            horario_agenda__agenda__dia=timeNow.date(),
+            horario_agenda__horario__hora__lte=timeNow.time()
         ).order_by(
             'horario_agenda__agenda__dia',
             'horario_agenda__horario__hora'

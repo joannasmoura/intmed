@@ -3,11 +3,7 @@ from django.conf.urls import url
 from django.urls import include, path
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView
-)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('clinica.urls')),
