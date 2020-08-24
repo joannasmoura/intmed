@@ -29,7 +29,8 @@ export class JwtInterceptor implements HttpInterceptor {
         } 
 
         return next.handle(request).pipe(catchError(err => {
-            if ( err instanceof HttpErrorResponse && ((err.status === 401 || err.status === 403) && request.url === `${environment.apiUrl}/refresh-token/`) || !currentUser.lembrarSenha) {
+          const lembrarSenha = currentUser ? currentUser.lembrarSenha : false
+            if ( err instanceof HttpErrorResponse && ((err.status === 401 || err.status === 403) && request.url === `${environment.apiUrl}/refresh-token/`) || (!lembrarSenha && request.url !== `${environment.apiUrl}/registrar/`)) {
               this.authenticationService.logout();
               location.reload()
               return throwError(err);

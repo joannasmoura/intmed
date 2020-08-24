@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../core/services/auth.service';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { ModalMessageComponent } from '../shared/modal-message/modal-message.component';
 
 @Component({
   selector: 'app-register',
@@ -23,19 +25,20 @@ passwordMatch:boolean=true;
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
-      nome: ['', [Validators.required]],
+      first_name: ['', [Validators.required]],
       email: ['', [Validators.required,Validators.pattern('^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$')]],      
       password: ['', [Validators.required]],      
       passwordConfirm: ['', [Validators.required]],
     }, {validator: this.matchPassword.bind(this) });
   }
-  get nome() {
-    return this.registerForm.get('nome');
+  get first_name() {
+    return this.registerForm.get('first_name');
   } 
   get email() {
     return this.registerForm.get('email');
@@ -63,14 +66,15 @@ passwordMatch:boolean=true;
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
+    this.error = "";
     if (this.registerForm.invalid) {
         return;
-    }
+    }    
     let formData = this.registerForm.value
     this.authenticationService.register({...formData, username:formData.email}).pipe(first())
       .subscribe(
           data => {
-            console.log('criou');
+            this.abrirModalMensagem('Conta criada com sucesso!', true);
           },
           err => {
             if(err.error.username){
@@ -80,6 +84,15 @@ passwordMatch:boolean=true;
             }
         }
     );
+  }
+
+  abrirModalMensagem(message, success) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {message:message, success:success}
+    let dialogRef = this.dialog.open(ModalMessageComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(res =>{
+      location.replace('login');
+    })
   }
 
   cancelar(){

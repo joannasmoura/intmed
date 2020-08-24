@@ -33,8 +33,7 @@ export class ModalConsultaComponent implements OnInit {
     private formBuilder: FormBuilder, 
     private consultaService:ConsultaService,
     public dialogRef: MatDialogRef<ModalConsultaComponent>,
-    private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: {getConsultas}) { }
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.consultaForm = this.formBuilder.group({
