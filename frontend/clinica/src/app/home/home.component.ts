@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
 
   abrirModalMensagem(message, success) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {message:message, success:success,getConsultas:this.getConsultas}
+    dialogConfig.data = {message:message, success:success}
     let dialogRef = this.dialog.open(ModalMessageComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(res =>{
       this.getConsultas()
