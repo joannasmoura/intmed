@@ -3,7 +3,7 @@ asgiref==3.2.10
 Babel==2.8.0
 cx-Oracle==8.0.0
 distlib==0.3.1
-Django==3.1
+Django==3.1.9
 django-cors-headers==3.4.0
 django-filter==2.3.0
 django-phonenumber-field==4.0.0
